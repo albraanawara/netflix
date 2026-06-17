@@ -4,13 +4,11 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 
 
-const Favorites = lazy(
-()=>import("../pages/Favorites")
-);
+
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
-const Movies = lazy(() => import("../pages/Movies"));
+
 const NotFound = lazy(
 ()=>import("../pages/404NotFound")
 );
@@ -67,36 +65,8 @@ export const router = createBrowserRouter([
       },
 
 
-      {
-        path: "movies",
-
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Movies />
-          </Suspense>
-        ),
-      },
-        {
-    path:"favorites",
-
-   element:
-
-(
-
-<ProtectedRoute>
-
-<Suspense fallback={<Loading/>}>
-
-<Favorites/>
-
-</Suspense>
-
-</ProtectedRoute>
-
-)
-
-    }
-
+      
+      
     ],
   },
 

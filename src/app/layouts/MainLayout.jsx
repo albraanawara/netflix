@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { useContext } from "react";
 
-import ThemeToggle from "../../components/ThemeToggle";
+
 import { AuthContext } from "../../context/AuthContext";
 
 
@@ -117,7 +117,7 @@ Register
 
 
 
-<ThemeToggle />
+
 
 
 </nav>
