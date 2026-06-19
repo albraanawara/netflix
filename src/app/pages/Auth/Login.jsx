@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import toast from "react-hot-toast";
 import bcrypt from "bcryptjs";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -60,50 +60,68 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh]">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+   <div className="flex justify-center items-center min-h-screen bg-zinc-950 text-white px-4">
+      
+      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 rounded-xl shadow-lg">
+        
+        <h1 className="text-3xl font-bold text-center mb-6 text-teal-400">
+          Login
+        </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+          {/* Email */}
           <div>
             <input
-              className="w-full border rounded-lg p-3"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-teal-500"
               placeholder="Email"
               {...register("email")}
             />
-
-            <p className="text-red-500">{errors.email?.message}</p>
+            <p className="text-red-400 text-sm mt-1">
+              {errors.email?.message}
+            </p>
           </div>
 
+          {/* Password */}
           <div>
             <input
               type="password"
-              className="w-full border rounded-lg p-3"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-teal-500"
               placeholder="Password"
               {...register("password")}
             />
-
-            <p className="text-red-500">{errors.password?.message}</p>
+            <p className="text-red-400 text-sm mt-1">
+              {errors.password?.message}
+            </p>
           </div>
 
+          {/* Server error */}
           {loginError && (
-            <p className="text-red-500 text-center">{loginError}</p>
+            <p className="text-red-400 text-center text-sm">
+              {loginError}
+            </p>
           )}
 
+          {/* Button */}
           <button
             type="submit"
-            className="
-            w-full
-            bg-green-600
-            text-white
-            p-3
-            rounded-lg
-            hover:bg-green-700
-            "
+            className="w-full bg-teal-600 text-white p-3 rounded-lg hover:bg-teal-500 transition font-semibold"
           >
             Login
           </button>
         </form>
+
+        {/* Register link */}
+        <p className="text-center text-sm text-zinc-400 mt-6">
+          Don’t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-teal-400 hover:underline"
+          >
+            Register
+          </Link>
+        </p>
+
       </div>
     </div>
   );
