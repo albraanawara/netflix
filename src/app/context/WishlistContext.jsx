@@ -1,12 +1,22 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { AuthContext } from "./AuthContext";
 
 export const WishlistContext = createContext();
 
+// Helper to get localStorage key for current user
+const getWishlistKey = (user) => {
+  if (!user || !user.email) return null;
+  return `wishlist_${user.email}`;
+};
+
 export default function WishlistProvider({ children }) {
+  const { user } = useContext(AuthContext);
   const [wishlist, setWishlist] = useState(() => {
     try {
-      const savedWishlist = localStorage.getItem("wishlist");
+      const key = getWishlistKey(user);
+      if (!key) return [];
+      const savedWishlist = localStorage.getItem(key);
       return savedWishlist ? JSON.parse(savedWishlist) : [];
     } catch (error) {
       console.error("Error loading wishlist from localStorage:", error);
@@ -14,9 +24,29 @@ export default function WishlistProvider({ children }) {
     }
   });
 
+  // Load wishlist when user changes (login/logout)
   useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
+    try {
+      const key = getWishlistKey(user);
+      if (key) {
+        const savedWishlist = localStorage.getItem(key);
+        setWishlist(savedWishlist ? JSON.parse(savedWishlist) : []);
+      } else {
+        setWishlist([]);
+      }
+    } catch (error) {
+      console.error("Error loading wishlist for user change:", error);
+      setWishlist([]);
+    }
+  }, [user]);
+
+  // Save wishlist to user's localStorage key when wishlist or user changes
+  useEffect(() => {
+    const key = getWishlistKey(user);
+    if (key) {
+      localStorage.setItem(key, JSON.stringify(wishlist));
+    }
+  }, [wishlist, user]);
 
   const addToWishlist = (movie) => {
     if (!movie || !movie.id) return;
@@ -55,8 +85,11 @@ export default function WishlistProvider({ children }) {
   };
 
   const clearWishlist = () => {
+    const key = getWishlistKey(user);
     setWishlist([]);
-    localStorage.removeItem("wishlist");
+    if (key) {
+      localStorage.removeItem(key);
+    }
     toast.success("Wishlist cleared");
   };
 
