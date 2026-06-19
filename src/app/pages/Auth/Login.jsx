@@ -12,7 +12,7 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-export default function Login() {
+export const Component = () => {
   const navigate = useNavigate();
 
   const { setUser } = useContext(AuthContext);

@@ -25,7 +25,7 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export default function Register() {
+export const Component = () => {
   const navigate = useNavigate();
 
   const { setUsers } = useContext(AuthContext);
