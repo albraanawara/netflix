@@ -1,13 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
+
+const AVATAR = "https://i.pravatar.cc/150?img=12";
 
 export const NavBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [moviesSearch, setMoviesSearch] = useState([]);
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   const [openMenu, setOpenMenu] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
 
 
   const getSearchResults = async (query) => {
@@ -65,13 +74,36 @@ export const NavBar = () => {
     <div className="hidden md:flex items-center gap-3">
       {user ? (
         <>
-          <span>Hi {user.name}</span>
-          <button
-            onClick={logout}
-            className="px-4 py-2 rounded-lg bg-teal-600"
+          <span className="text-sm text-zinc-300">Hi, {user.name}</span>
+          <div
+            className="relative"
+            onMouseEnter={() => setOpenDropdown(true)}
+            onMouseLeave={() => setOpenDropdown(false)}
           >
-            Logout
-          </button>
+            <img
+              src={AVATAR}
+              alt="avatar"
+              className="w-10 h-10 rounded-full cursor-pointer border-2 border-teal-500 hover:border-teal-300 transition-all"
+            />
+            {openDropdown && (
+              <div className="absolute right-0 top-full mt-1 w-44 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+                <Link
+                  to="/profile"
+                  onClick={() => setOpenDropdown(false)}
+                  className="flex items-center gap-2 px-4 py-3 hover:bg-zinc-800 transition-colors text-sm"
+                >
+                  <span>👤</span> Profile
+                </Link>
+                <hr className="border-zinc-700" />
+                <button
+                  onClick={() => { handleLogout(); setOpenDropdown(false); }}
+                  className="flex items-center gap-2 w-full px-4 py-3 hover:bg-zinc-800 transition-colors text-sm text-red-400"
+                >
+                  <span>🚪</span> Logout
+                </button>
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -115,15 +147,22 @@ export const NavBar = () => {
       />
 
       {user ? (
-        <button
-          onClick={() => {
-            logout();
-            setOpenMenu(false);
-          }}
-          className="w-full bg-teal-600 py-2 rounded-lg"
-        >
-          Logout
-        </button>
+        <>
+          <Link
+            onClick={() => setOpenMenu(false)}
+            to="/profile"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-800"
+          >
+            <img src={AVATAR} alt="avatar" className="w-8 h-8 rounded-full border border-teal-500" />
+            <span>{user.name}</span>
+          </Link>
+          <button
+            onClick={() => { handleLogout(); setOpenMenu(false); }}
+            className="w-full bg-red-600 hover:bg-red-500 py-2 rounded-lg text-sm"
+          >
+            Logout
+          </button>
+        </>
       ) : (
         <>
           <Link onClick={() => setOpenMenu(false)} to="/login">
