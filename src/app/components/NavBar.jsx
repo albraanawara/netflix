@@ -158,8 +158,8 @@ export const NavBar = () => {
             <img
               src={
                 movie?.poster_path
-                  ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                  : "https://via.placeholder.com/100"
+                  && `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                  
               }
               alt={movie?.title}
               className="h-12 w-12 rounded-lg object-cover shadow"

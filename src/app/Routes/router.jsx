@@ -40,6 +40,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <AuthLayout />,
+     HydrateFallback: Loading,
     children: [
       {
         path: "login",
