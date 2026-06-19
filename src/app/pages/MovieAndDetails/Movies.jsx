@@ -1,0 +1,156 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { Loading } from "../../utils/Loading";
+import { Link } from "react-router-dom";
+// import ReactStars from "react-rating-stars-component";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+
+// export const loader = async ({ params }) => {
+//     const { id } = params;
+//        const { data } = await axios.get( "https://api.themoviedb.org/3/movie/popular", {
+//       params: { language: "en-US", page: 1 },
+//     headers: {
+//         accept: "application/json",
+//         Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYTY4NjZkMTkzMGZkYjc5OTc4MWMzNjAzZmM0ZTJkYyIsInN1YiI6IjY2MmUwYTNmMjRmMmNlMDEyNjJhYWY1NiIsInNjb3BlcyI6WyJhcGxfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B2gaJass2LZ7YG8RB9u2PxXFNBHimDIBXxwQAVSeJDE",
+//       },
+//     });
+//   return data
+
+// }
+
+export const ErrorBoundary = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 text-white">
+      <h1 className="text-4xl font-bold text-teal-400 mb-4">Oops!</h1>
+      <p className="text-zinc-500 text-lg">Something went wrong while loading the movies.</p>
+    </div>
+  );
+}
+
+
+
+export const Component = () => {
+  const result = useLoaderData();
+  const [counter, setCounter] = useState(1);
+  const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
+  const fetchMovies = async () => {
+    try {
+      const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
+        params: { language: "en-US", page: counter },
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYTY4NjZkMTkzMGZkYjc5OTc4MWMzNjAzZmM0ZTJkYyIsIm5iZiI6MTcxNDI5MzMxMS4yLCJzdWIiOiI2NjJlMGEzZjI0ZjJjZTAxMjYyYWFmNTYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ss1IcpVByzOGldtfb5cWiyf4F-D70wUFmmdA3ie6YLs",
+        },
+      });
+      setMovies(response.data.results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovies();
+  }, [counter]);
+
+  console.log(movies);
+  return (
+    <div className="bg-zinc-950 min-h-screen px-4 py-6 text-white">
+
+      {/* Title */}
+      <h1 className="text-teal-400 font-bold text-4xl text-center lg:text-left container mx-auto my-5">
+        Movies
+      </h1>
+
+      {/* Page Info */}
+      <h1 className="text-white text-center font-bold text-3xl container mx-auto my-8">
+        Page <span className="text-teal-400 underline mx-2">{counter || 1}</span>
+        From <span className="text-teal-400 underline mx-2">500</span>
+      </h1>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto justify-items-center">
+
+        {movies?.map((movie, i) => (
+          <div className="w-[19rem] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition" key={i}>
+
+            {/* Image */}
+            <img
+              src={`https://media.themoviedb.org/t/p/w220_and_h330_face${movie.poster_path}`}
+              alt={movie.title}
+              className="w-full  object-cover object-center"
+            />
+
+            {/* Body */}
+            <div className="p-4 space-y-3">
+
+              {/* Title */}
+              <h2 className="font-bold text-white text-lg">
+                {movie.title}
+              </h2>
+
+              {/* Info Row */}
+              <div className="flex justify-between text-sm text-zinc-400">
+                <span>⭐ {movie.vote_average}</span>
+                <span>🔥 {movie.popularity.toFixed(0)}</span>
+              </div>
+
+              {/* Date + Language */}
+              <div className="flex justify-between text-xs text-zinc-500">
+                <span>📅 {movie.release_date}</span>
+                <span>🌍 {movie.original_language}</span>
+              </div>
+
+              {/* Adult Badge */}
+              {movie.adult && (
+                <span className="inline-block text-xs bg-red-600 px-2 py-1 rounded-md">
+                  18+
+                </span>
+              )}
+
+              {/* Overview */}
+              <p className="text-zinc-400 text-sm line-clamp-3">
+                {movie.overview}
+              </p>
+
+              {/* Button */}
+              <div className="flex justify-center pt-2">
+                <button onClick={() => navigate(`/movies/${movie.id}`)} className="border border-teal-400 text-teal-400 px-4 py-2 rounded-lg hover:bg-teal-400 hover:text-black transition">
+                  Details
+                </button>
+              </div>
+
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-center gap-6 py-10">
+
+        <button
+          disabled={counter === 1}
+          onClick={() => setCounter((prev) => prev - 1)}
+          className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-lg border border-zinc-700 transition"
+        >
+          <ArrowLeftIcon className="h-5 w-5 text-white" />
+        </button>
+
+        <p className="text-white">
+          Page <span className="text-teal-400 font-bold">{counter || 1}</span>{" "}
+          of <span className="text-teal-400 font-bold">500</span>
+        </p>
+
+        <button
+          disabled={counter === 500}
+          onClick={() => setCounter((prev) => prev + 1)}
+          className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-lg border border-zinc-700 transition"
+        >
+          <ArrowRightIcon className="h-5 w-5 text-white" />
+        </button>
+
+      </div>
+    </div>
+  );
+}
