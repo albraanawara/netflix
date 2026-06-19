@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { WishlistContext } from "../../context/WishlistContext";
 
 export const loader = async ({ params }) => {
   const { id } = params;
@@ -43,12 +44,14 @@ export const loader = async ({ params }) => {
 
 export const Component = () => {
   const { movieDetails, castAndCrewData, videosData } = useLoaderData();
+  const { toggleWishlist, isInWishlist } = useContext(WishlistContext);
   const cast = castAndCrewData.cast;
   const crew = castAndCrewData.crew;
   const [openTrailer, setOpenTrailer] = useState(false);
   const [trailer, setTrailer] = useState(
     videosData.results.find((video) => video.type === "Trailer" && video.site === "YouTube")
   );
+  const navigate = useNavigate();
   console.log(videosData);
 
   return (
@@ -213,12 +216,15 @@ export const Component = () => {
             {/* ACTIONS */}
             <div className="flex flex-wrap gap-4 rounded-2xl bg-[#1b1b1b] p-6">
 
-              <button className="rounded-lg bg-cyan-500 px-5 py-3 font-semibold text-black transition hover:bg-cyan-400">
-                Add Watchlist
-              </button>
-
-              <button className="rounded-lg bg-yellow-500 px-5 py-3 font-semibold text-black transition hover:bg-yellow-400">
-                Rate Movie
+              <button
+                onClick={() => toggleWishlist(movieDetails)}
+                className={`rounded-lg px-5 py-3 font-semibold text-black transition ${
+                  isInWishlist(movieDetails.id)
+                    ? "bg-red-500 hover:bg-red-400"
+                    : "bg-cyan-500 hover:bg-cyan-400"
+                }`}
+              >
+                {isInWishlist(movieDetails.id) ? "Remove from Wishlist" : "Add to Wishlist"}
               </button>
 
               <button
@@ -232,6 +238,13 @@ export const Component = () => {
 
             {/* BACK */}
             <button
+              onClick={() => {
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate("/movies");
+                }
+              }}
               className="rounded-lg border border-cyan-400 px-6 py-3 text-cyan-400 transition hover:bg-cyan-400 hover:text-black"
             >
               Back

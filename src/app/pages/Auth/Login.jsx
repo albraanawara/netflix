@@ -56,7 +56,7 @@ export const Component = () => {
 
     toast.success("Welcome Back");
 
-    navigate("/");
+    navigate("/movies");
   };
 
   return (
