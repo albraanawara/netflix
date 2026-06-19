@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { WishlistContext } from "../context/WishlistContext";
 import axios from "axios";
 
 const AVATAR = "https://i.pravatar.cc/150?img=12";
@@ -9,6 +10,7 @@ export const NavBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [moviesSearch, setMoviesSearch] = useState([]);
   const { user, logout } = useContext(AuthContext);
+  const { wishlist } = useContext(WishlistContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -56,6 +58,10 @@ export const NavBar = () => {
 
       <Link className="px-3 py-1 rounded-lg hover:bg-zinc-800" to="/movies">
         Movies
+      </Link>
+
+      <Link className="px-3 py-1 rounded-lg hover:bg-zinc-800 flex items-center gap-1" to="/wishlist">
+        Wishlist <span className="bg-teal-600 text-[10px] px-1.5 py-0.5 rounded-full">{wishlist.length}</span>
       </Link>
     </div>
 
@@ -136,6 +142,11 @@ export const NavBar = () => {
 
       <Link onClick={() => setOpenMenu(false)} to="/movies">
         Movies
+      </Link>
+
+      <Link onClick={() => setOpenMenu(false)} to="/wishlist" className="flex justify-between items-center">
+        <span>Wishlist</span>
+        <span className="bg-teal-600 text-xs px-2 py-0.5 rounded-full">{wishlist.length}</span>
       </Link>
 
       <input

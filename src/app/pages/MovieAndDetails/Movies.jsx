@@ -1,10 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { Loading } from "../../utils/Loading";
 import { Link } from "react-router-dom";
 // import ReactStars from "react-rating-stars-component";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
+import { WishlistContext } from "../../context/WishlistContext";
 
 // export const loader = async ({ params }) => {
 //     const { id } = params;
@@ -35,6 +37,7 @@ export const Component = () => {
   const [counter, setCounter] = useState(1);
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
+  const { toggleWishlist, isInWishlist } = useContext(WishlistContext);
   const fetchMovies = async () => {
     try {
       const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
@@ -73,7 +76,22 @@ export const Component = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto justify-items-center">
 
         {movies?.map((movie, i) => (
-          <div className="w-[19rem] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition" key={i}>
+          <div className="w-[19rem] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition relative" key={i}>
+
+            {/* Heart Icon */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleWishlist(movie);
+              }}
+              className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 p-2 rounded-full transition-colors"
+            >
+              {isInWishlist(movie.id) ? (
+                <HeartIconSolid className="h-6 w-6 text-red-500" />
+              ) : (
+                <HeartIcon className="h-6 w-6 text-white" />
+              )}
+            </button>
 
             {/* Image */}
             <img
@@ -116,7 +134,7 @@ export const Component = () => {
 
               {/* Button */}
               <div className="flex justify-center pt-2">
-                <button onClick={() => navigate(`/movies/${movie.id}`)} className="border border-teal-400 text-teal-400 px-4 py-2 rounded-lg hover:bg-teal-400 hover:text-black transition">
+                <button onClick={() => navigate(`/movies/${movie.id}`)} className="border border-teal-400 text-teal-400 px-6 py-2 rounded-lg hover:bg-teal-400 hover:text-black transition">
                   Details
                 </button>
               </div>

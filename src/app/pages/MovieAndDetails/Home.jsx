@@ -1,15 +1,12 @@
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Component = () => {
-  const { user, users } = useContext(AuthContext);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    navigate("/movies", { replace: true });
+  }, [navigate]);
 
-  return (
-    <div>
-      <h1>Welcome {user?.name || "Guest"}</h1>
-
-      <p>{user?.email}</p>
-    </div>
-  );
+  return null;
 }

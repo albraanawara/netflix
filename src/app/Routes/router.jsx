@@ -7,6 +7,7 @@ import AuthLayout from "../layouts/AuthLayout";
 const Home = () => import("../pages/MovieAndDetails/Home");
 const Movies = () => import("../pages/MovieAndDetails/Movies");
 const MovieDetails = () => import("../pages/MovieAndDetails/MovieDetails");
+const Wishlist = () => import("../pages/Wishlist/Wishlist");
 
 const Login = () => import("../pages/Auth/Login");
 const Register = () => import("../pages/Auth/Register");
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: Home,
+        lazy: Movies,
       },
       {
         path: "movies",
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
       {
         path: "movies/:id",
         lazy: MovieDetails,
+      },
+      {
+        path: "wishlist",
+        lazy: Wishlist,
       },
       {
         path: "profile",
