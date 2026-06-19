@@ -11,6 +11,7 @@ const MovieDetails = () => import("../pages/MovieAndDetails/MovieDetails");
 const Login = () => import("../pages/Auth/Login");
 const Register = () => import("../pages/Auth/Register");
 
+const Profile = () => import("../pages/Profile/Profile");
 const NotFound = () => import("../pages/Error Page/404NotFound");
 
 // Loading UI
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "movies/:id",
         lazy: MovieDetails,
+      },
+      {
+        path: "profile",
+        lazy: Profile,
       },
     ],
   },
