@@ -64,6 +64,10 @@ export const NavBar = () => {
         Movies
       </Link>
 
+      <Link className="px-3 py-1 rounded-lg hover:bg-zinc-800" to="/search">
+        Search
+      </Link>
+
       <Link className="px-3 py-1 rounded-lg hover:bg-zinc-800 flex items-center gap-1" to="/wishlist">
         Wishlist <span className="bg-teal-600 text-[10px] px-1.5 py-0.5 rounded-full">{wishlist.length}</span>
       </Link>
@@ -146,6 +150,10 @@ export const NavBar = () => {
 
       <Link onClick={() => setOpenMenu(false)} to="/movies">
         Movies
+      </Link>
+
+      <Link onClick={() => setOpenMenu(false)} to="/search">
+        Search
       </Link>
 
       <Link onClick={() => setOpenMenu(false)} to="/wishlist" className="flex justify-between items-center">

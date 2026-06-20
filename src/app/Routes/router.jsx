@@ -9,6 +9,7 @@ import GuestRoute from "../components/GuestRoute";
 const Home = () => import("../pages/MovieAndDetails/Home");
 const Movies = () => import("../pages/MovieAndDetails/Movies");
 const MovieDetails = () => import("../pages/MovieAndDetails/MovieDetails");
+const Search = () => import("../pages/Search/Search");
 const Wishlist = () => import("../pages/Wishlist/Wishlist");
 const Login = () => import("../pages/Auth/Login");
 const Register = () => import("../pages/Auth/Register");
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
       {
         path: "movies/:id",
         lazy: MovieDetails,
+      },
+      {
+        path: "search",
+        lazy: Search,
       },
       {
         path: "wishlist",
