@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Loading } from "../../utils/Loading";
 import { WishlistContext } from "../../context/WishlistContext";
-import { HeartIcon } from "@heroicons/react/24/outline";
+import { HeartIcon, ArrowLeftIcon, ArrowRightIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 
 const API_TOKEN =
@@ -25,8 +25,11 @@ export const Component = () => {
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [sortBy, setSortBy] = useState("popularity");
-  const [loading, setLoading] = useState(!!initialQuery);
-  const [hasSearched, setHasSearched] = useState(!!initialQuery);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
   const { toggleWishlist, isInWishlist } = useContext(WishlistContext);
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ export const Component = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(inputValue.trim());
+      setCurrentPage(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [inputValue]);
@@ -59,19 +63,8 @@ export const Component = () => {
       .catch(console.error);
   }, []);
 
-  // Main fetch: runs when query OR genre changes
-  // - genre only  → /discover/movie?with_genres=   (server-side filter)
-  // - query only  → /search/movie                   (all results)
-  // - query+genre → /search/movie + client-side filter
-  // - neither     → clear results, show initial state
+  // Main fetch: runs when query OR genre OR page changes
   useEffect(() => {
-    if (!debouncedQuery && !selectedGenre) {
-      setMovies([]);
-      setHasSearched(false);
-      setLoading(false);
-      return;
-    }
-
     const controller = new AbortController();
     setLoading(true);
     setHasSearched(true);
@@ -82,16 +75,20 @@ export const Component = () => {
 
         if (debouncedQuery) {
           url = "https://api.themoviedb.org/3/search/movie";
-          params = { query: debouncedQuery, language: "en-US", page: 1 };
-        } else {
+          params = { query: debouncedQuery, language: "en-US", page: currentPage };
+        } else if (selectedGenre) {
           // Genre selected, no text query → use discover
           url = "https://api.themoviedb.org/3/discover/movie";
           params = {
             with_genres: selectedGenre,
             language: "en-US",
-            page: 1,
+            page: currentPage,
             sort_by: "popularity.desc",
           };
+        } else {
+          // No query and no genre (All) → show popular movies
+          url = "https://api.themoviedb.org/3/movie/popular";
+          params = { language: "en-US", page: currentPage };
         }
 
         const res = await axios.get(url, {
@@ -100,10 +97,14 @@ export const Component = () => {
           signal: controller.signal,
         });
         setMovies(res.data.results);
+        setTotalPages(res.data.total_pages > 500 ? 500 : res.data.total_pages);
+        setTotalResults(res.data.total_results);
       } catch (err) {
         if (!axios.isCancel(err)) {
           console.error("Fetch error:", err);
           setMovies([]);
+          setTotalPages(1);
+          setTotalResults(0);
         }
       } finally {
         setLoading(false);
@@ -112,10 +113,9 @@ export const Component = () => {
 
     doFetch();
     return () => controller.abort();
-  }, [debouncedQuery, selectedGenre]);
+  }, [debouncedQuery, selectedGenre, currentPage]);
 
   // Client-side genre filter only when both query AND genre are active
-  // (discover already filters server-side when there's no query)
   const filteredMovies =
     debouncedQuery && selectedGenre
       ? movies.filter((m) => m.genre_ids?.includes(selectedGenre))
@@ -129,7 +129,10 @@ export const Component = () => {
     return 0;
   });
 
-  const triggerSearch = () => setDebouncedQuery(inputValue.trim());
+  const triggerSearch = () => {
+    setCurrentPage(1);
+    setDebouncedQuery(inputValue.trim());
+  };
 
   return (
     <div className="bg-zinc-950 min-h-screen text-white">
@@ -169,7 +172,10 @@ export const Component = () => {
             </p>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => setSelectedGenre(null)}
+                onClick={() => {
+                  setSelectedGenre(null);
+                  setCurrentPage(1);
+                }}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   selectedGenre === null
                     ? "bg-teal-600 text-white"
@@ -181,7 +187,10 @@ export const Component = () => {
               {genres.map((g) => (
                 <button
                   key={g.id}
-                  onClick={() => setSelectedGenre(selectedGenre === g.id ? null : g.id)}
+                  onClick={() => {
+                    setSelectedGenre(selectedGenre === g.id ? null : g.id);
+                    setCurrentPage(1);
+                  }}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     selectedGenre === g.id
                       ? "bg-teal-600 text-white"
@@ -222,7 +231,7 @@ export const Component = () => {
           <p className="text-zinc-500 text-sm mb-6">
             {sortedMovies.length === 0
               ? "No movies found"
-              : `${sortedMovies.length} movie${sortedMovies.length !== 1 ? "s" : ""} found`}
+              : `${totalResults} movie${totalResults !== 1 ? "s" : ""} found`}
           </p>
         )}
 
@@ -230,52 +239,99 @@ export const Component = () => {
         {loading ? (
           <Loading />
         ) : sortedMovies.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {sortedMovies.map((movie) => (
-              <div
-                key={movie.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-transform relative"
-              >
-                <button
-                  onClick={() => toggleWishlist(movie)}
-                  className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 p-2 rounded-full transition-colors"
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {sortedMovies.map((movie) => (
+                <div
+                  key={movie.id}
+                  className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-transform relative"
                 >
-                  {isInWishlist(movie.id) ? (
-                    <HeartIconSolid className="h-5 w-5 text-red-500" />
-                  ) : (
-                    <HeartIcon className="h-5 w-5 text-white" />
-                  )}
-                </button>
-
-                <img
-                  src={
-                    movie.poster_path
-                      ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                      : "https://placehold.co/300x450/27272a/71717a?text=No+Image"
-                  }
-                  alt={movie.title}
-                  className="w-full h-64 object-cover object-top"
-                />
-
-                <div className="p-4 space-y-2">
-                  <h2 className="font-bold text-white text-sm line-clamp-2 leading-snug">
-                    {movie.title}
-                  </h2>
-                  <div className="flex justify-between text-xs text-zinc-400">
-                    <span>⭐ {movie.vote_average?.toFixed(1)}</span>
-                    <span>📅 {movie.release_date?.slice(0, 4) || "—"}</span>
-                  </div>
-                  <p className="text-zinc-500 text-xs line-clamp-2">{movie.overview}</p>
                   <button
-                    onClick={() => navigate(`/movies/${movie.id}`)}
-                    className="w-full mt-1 border border-teal-400 text-teal-400 py-1.5 rounded-lg hover:bg-teal-400 hover:text-black text-sm transition-colors"
+                    onClick={() => toggleWishlist(movie)}
+                    className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 p-2 rounded-full transition-colors"
                   >
-                    Details
+                    {isInWishlist(movie.id) ? (
+                      <HeartIconSolid className="h-5 w-5 text-red-500" />
+                    ) : (
+                      <HeartIcon className="h-5 w-5 text-white" />
+                    )}
                   </button>
+
+                  <img
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                        : "https://placehold.co/300x450/27272a/71717a?text=No+Image"
+                    }
+                    alt={movie.title}
+                    className="w-full h-64 object-cover object-top"
+                  />
+
+                  <div className="p-4 space-y-2">
+                    <h2 className="font-bold text-white text-sm line-clamp-2 leading-snug">
+                      {movie.title}
+                    </h2>
+                    <div className="flex justify-between text-xs text-zinc-400">
+                      <span>⭐ {movie.vote_average?.toFixed(1)}</span>
+                      <span>📅 {movie.release_date?.slice(0, 4) || "—"}</span>
+                    </div>
+                    <p className="text-zinc-500 text-xs line-clamp-2">{movie.overview}</p>
+                    <button
+                      onClick={() => navigate(`/movies/${movie.id}`)}
+                      className="w-full mt-1 border border-teal-400 text-teal-400 py-1.5 rounded-lg hover:bg-teal-400 hover:text-black text-sm transition-colors"
+                    >
+                      Details
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-center gap-4 py-10">
+              {/* First Page Button */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(1)}
+                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+              >
+                <ChevronDoubleLeftIcon className="h-5 w-5 text-white" />
+              </button>
+
+              {/* Previous Button */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+              >
+                <ArrowLeftIcon className="h-5 w-5 text-white" />
+              </button>
+
+              {/* Page Info */}
+              <p className="text-white">
+                Page <span className="text-teal-400 font-bold">{currentPage || 1}</span>{" "}
+                of <span className="text-teal-400 font-bold">{totalPages}</span>
+              </p>
+
+              {/* Next Button */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+              >
+                <ArrowRightIcon className="h-5 w-5 text-white" />
+              </button>
+
+              {/* Last Page Button */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(totalPages)}
+                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+              >
+                <ChevronDoubleRightIcon className="h-5 w-5 text-white" />
+              </button>
+            </div>
+          </>
         ) : hasSearched ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <p className="text-6xl mb-4">🎬</p>

@@ -4,7 +4,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { Loading } from "../../utils/Loading";
 import { Link } from "react-router-dom";
 // import ReactStars from "react-rating-stars-component";
-import { ArrowLeftIcon, ArrowRightIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, HeartIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { WishlistContext } from "../../context/WishlistContext";
 
@@ -73,7 +73,7 @@ export const Component = () => {
       </h1>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 container mx-auto justify-items-center">
 
         {movies?.map((movie, i) => (
           <div className="w-[19rem] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition relative" key={i}>
@@ -145,27 +145,48 @@ export const Component = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-6 py-10">
+      <div className="flex items-center justify-center gap-4 py-10">
 
+        {/* First Page Button */}
+        <button
+          disabled={counter === 1}
+          onClick={() => setCounter(1)}
+          className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+        >
+          <ChevronDoubleLeftIcon className="h-5 w-5 text-white" />
+        </button>
+
+        {/* Previous Button */}
         <button
           disabled={counter === 1}
           onClick={() => setCounter((prev) => prev - 1)}
-          className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-lg border border-zinc-700 transition"
+          className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
         >
           <ArrowLeftIcon className="h-5 w-5 text-white" />
         </button>
 
+        {/* Page Info */}
         <p className="text-white">
           Page <span className="text-teal-400 font-bold">{counter || 1}</span>{" "}
           of <span className="text-teal-400 font-bold">500</span>
         </p>
 
+        {/* Next Button */}
         <button
           disabled={counter === 500}
           onClick={() => setCounter((prev) => prev + 1)}
-          className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-lg border border-zinc-700 transition"
+          className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
         >
           <ArrowRightIcon className="h-5 w-5 text-white" />
+        </button>
+
+        {/* Last Page Button */}
+        <button
+          disabled={counter === 500}
+          onClick={() => setCounter(500)}
+          className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+        >
+          <ChevronDoubleRightIcon className="h-5 w-5 text-white" />
         </button>
 
       </div>
