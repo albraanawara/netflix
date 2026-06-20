@@ -21,7 +21,11 @@ export const NavBar = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
 
 
-  const getSearchResults = async (query) => {
+  const getSearchResults = async () => {
+    if (!searchTerm.trim()) {
+      setMoviesSearch([]);
+      return;
+    }
     try {
       const response = await axios.get("https://api.themoviedb.org/3/search/movie", {
         params: { query: searchTerm, language: "en-US", page: 1 },
@@ -198,7 +202,6 @@ export const NavBar = () => {
         <Link
           key={movie?.id}
           to={`/movies/${movie?.id}`}
-          onClick={() => dispatch(aboutSearch())}
           className="flex items-center justify-between gap-3 p-3 transition-all duration-300 hover:bg-[#0DCAF0] hover:text-black group"
         >
 
