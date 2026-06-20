@@ -51,23 +51,19 @@ export default function WishlistProvider({ children }) {
   const addToWishlist = (movie) => {
     if (!movie || !movie.id) return;
     
-    setWishlist((prev) => {
-      if (prev.find((item) => item.id === movie.id)) {
-        return prev;
-      }
+    const isAlreadyInWishlist = isInWishlist(movie.id);
+    if (!isAlreadyInWishlist) {
+      setWishlist((prev) => [...prev, movie]);
       toast.success(`${movie.title} added to wishlist`);
-      return [...prev, movie];
-    });
+    }
   };
 
   const removeFromWishlist = (movieId) => {
-    setWishlist((prev) => {
-      const movie = prev.find((item) => item.id === movieId);
-      if (movie) {
-        toast.success(`${movie.title} removed from wishlist`);
-      }
-      return prev.filter((item) => item.id !== movieId);
-    });
+    const movie = wishlist.find((item) => item.id === movieId);
+    if (movie) {
+      setWishlist((prev) => prev.filter((item) => item.id !== movieId));
+      toast.success(`${movie.title} removed from wishlist`);
+    }
   };
 
   const toggleWishlist = (movie) => {
@@ -86,11 +82,13 @@ export default function WishlistProvider({ children }) {
 
   const clearWishlist = () => {
     const key = getWishlistKey(user);
-    setWishlist([]);
-    if (key) {
-      localStorage.removeItem(key);
+    if (wishlist.length > 0) {
+      setWishlist([]);
+      if (key) {
+        localStorage.removeItem(key);
+      }
+      toast.success("Wishlist cleared");
     }
-    toast.success("Wishlist cleared");
   };
 
   return (
