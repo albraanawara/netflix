@@ -135,12 +135,12 @@ export const Component = () => {
   };
 
   return (
-    <div className="bg-zinc-950 min-h-screen text-white">
+    <div className="bg-white dark:bg-zinc-950 min-h-screen text-zinc-900 dark:text-white transition-colors">
       {/* Search Header */}
-      <div className="bg-zinc-900 border-b border-zinc-800 py-10">
+      <div className="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-teal-400 mb-1">Movie Search</h1>
-          <p className="text-zinc-400 text-sm">Discover any movie from the TMDB database</p>
+          <h1 className="text-4xl font-bold text-teal-600 dark:text-teal-400 mb-1">Movie Search</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-sm">Discover any movie from the TMDB database</p>
         </div>
       </div>
 
@@ -153,12 +153,12 @@ export const Component = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && triggerSearch()}
             placeholder="Search for a movie..."
-            className="flex-1 px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 focus:border-teal-500 focus:outline-none text-white placeholder-zinc-500 text-base"
+            className="flex-1 px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:border-teal-500 focus:outline-none text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-base"
             autoFocus
           />
           <button
             onClick={triggerSearch}
-            className="px-6 py-3 bg-teal-600 hover:bg-teal-500 rounded-xl font-semibold transition-colors"
+            className="px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-semibold transition-colors shadow-md"
           >
             Search
           </button>
@@ -166,8 +166,8 @@ export const Component = () => {
 
         {/* Filters Panel — always visible */}
         {genres.length > 0 && (
-          <div className="mb-6 p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
-            <p className="text-zinc-400 text-xs uppercase tracking-wider font-semibold mb-3">
+          <div className="mb-6 p-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm">
+            <p className="text-zinc-500 dark:text-zinc-400 text-xs uppercase tracking-wider font-semibold mb-3">
               Filter by Genre
             </p>
             <div className="flex flex-wrap gap-2">
@@ -178,8 +178,8 @@ export const Component = () => {
                 }}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   selectedGenre === null
-                    ? "bg-teal-600 text-white"
-                    : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                    ? "bg-teal-600 text-white shadow-sm"
+                    : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                 }`}
               >
                 All
@@ -193,8 +193,8 @@ export const Component = () => {
                   }}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     selectedGenre === g.id
-                      ? "bg-teal-600 text-white"
-                      : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                      ? "bg-teal-600 text-white shadow-sm"
+                      : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                   }`}
                 >
                   {g.name}
@@ -206,7 +206,7 @@ export const Component = () => {
 
         {/* Sort Controls — always visible */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <p className="text-zinc-400 text-xs uppercase tracking-wider font-semibold">
+          <p className="text-zinc-500 dark:text-zinc-400 text-xs uppercase tracking-wider font-semibold">
             Sort by
           </p>
           <div className="flex gap-2">
@@ -216,8 +216,8 @@ export const Component = () => {
                 onClick={() => setSortBy(opt.value)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   sortBy === opt.value
-                    ? "bg-teal-600 text-white"
-                    : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                    ? "bg-teal-600 text-white shadow-sm"
+                    : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                 }`}
               >
                 {opt.label}
@@ -228,7 +228,7 @@ export const Component = () => {
 
         {/* Results Count */}
         {hasSearched && !loading && (
-          <p className="text-zinc-500 text-sm mb-6">
+          <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
             {sortedMovies.length === 0
               ? "No movies found"
               : `${totalResults} movie${totalResults !== 1 ? "s" : ""} found`}
@@ -244,16 +244,16 @@ export const Component = () => {
               {sortedMovies.map((movie) => (
                 <div
                   key={movie.id}
-                  className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-transform relative"
+                  className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-transform relative"
                 >
                   <button
                     onClick={() => toggleWishlist(movie)}
-                    className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 p-2 rounded-full transition-colors"
+                    className="absolute top-3 right-3 z-10 bg-white/60 dark:bg-black/60 hover:bg-white/80 dark:hover:bg-black/80 p-2 rounded-full transition-colors shadow-sm"
                   >
                     {isInWishlist(movie.id) ? (
                       <HeartIconSolid className="h-5 w-5 text-red-500" />
                     ) : (
-                      <HeartIcon className="h-5 w-5 text-white" />
+                      <HeartIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
                     )}
                   </button>
 
@@ -268,17 +268,17 @@ export const Component = () => {
                   />
 
                   <div className="p-4 space-y-2">
-                    <h2 className="font-bold text-white text-sm line-clamp-2 leading-snug">
+                    <h2 className="font-bold text-zinc-900 dark:text-white text-sm line-clamp-2 leading-snug">
                       {movie.title}
                     </h2>
-                    <div className="flex justify-between text-xs text-zinc-400">
+                    <div className="flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
                       <span>⭐ {movie.vote_average?.toFixed(1)}</span>
                       <span>📅 {movie.release_date?.slice(0, 4) || "—"}</span>
                     </div>
-                    <p className="text-zinc-500 text-xs line-clamp-2">{movie.overview}</p>
+                    <p className="text-zinc-600 dark:text-zinc-500 text-xs line-clamp-2">{movie.overview}</p>
                     <button
                       onClick={() => navigate(`/movies/${movie.id}`)}
-                      className="w-full mt-1 border border-teal-400 text-teal-400 py-1.5 rounded-lg hover:bg-teal-400 hover:text-black text-sm transition-colors"
+                      className="w-full mt-1 border border-teal-600 dark:border-teal-400 text-teal-600 dark:text-teal-400 py-1.5 rounded-lg hover:bg-teal-600 dark:hover:bg-teal-400 hover:text-white dark:hover:text-black text-sm transition-colors"
                     >
                       Details
                     </button>
@@ -293,56 +293,56 @@ export const Component = () => {
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(1)}
-                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+                className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 transition"
               >
-                <ChevronDoubleLeftIcon className="h-5 w-5 text-white" />
+                <ChevronDoubleLeftIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
               </button>
 
               {/* Previous Button */}
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => prev - 1)}
-                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+                className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 transition"
               >
-                <ArrowLeftIcon className="h-5 w-5 text-white" />
+                <ArrowLeftIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
               </button>
 
               {/* Page Info */}
-              <p className="text-white">
-                Page <span className="text-teal-400 font-bold">{currentPage || 1}</span>{" "}
-                of <span className="text-teal-400 font-bold">{totalPages}</span>
+              <p className="text-zinc-800 dark:text-white">
+                Page <span className="text-teal-600 dark:text-teal-400 font-bold">{currentPage || 1}</span>{" "}
+                of <span className="text-teal-600 dark:text-teal-400 font-bold">{totalPages}</span>
               </p>
 
               {/* Next Button */}
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+                className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 transition"
               >
-                <ArrowRightIcon className="h-5 w-5 text-white" />
+                <ArrowRightIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
               </button>
 
               {/* Last Page Button */}
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(totalPages)}
-                className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-700 transition"
+                className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 transition"
               >
-                <ChevronDoubleRightIcon className="h-5 w-5 text-white" />
+                <ChevronDoubleRightIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
               </button>
             </div>
           </>
         ) : hasSearched ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <p className="text-6xl mb-4">🎬</p>
-            <h2 className="text-2xl font-bold text-zinc-300 mb-2">No movies found</h2>
-            <p className="text-zinc-500">Try a different search term or remove the genre filter.</p>
+            <p className="text-6xl mb-4 text-zinc-400">🎬</p>
+            <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-300 mb-2">No movies found</h2>
+            <p className="text-zinc-500 dark:text-zinc-500">Try a different search term or remove the genre filter.</p>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <p className="text-6xl mb-4">🔍</p>
-            <h2 className="text-2xl font-bold text-zinc-300 mb-2">Search for movies</h2>
-            <p className="text-zinc-500">Type a movie name or pick a genre above to get started.</p>
+            <p className="text-6xl mb-4 text-zinc-400">🔍</p>
+            <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-300 mb-2">Search for movies</h2>
+            <p className="text-zinc-500 dark:text-zinc-500">Type a movie name or pick a genre above to get started.</p>
           </div>
         )}
       </div>

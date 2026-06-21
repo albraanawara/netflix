@@ -55,7 +55,7 @@ export const Component = () => {
   console.log(videosData);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#121212] text-white">
+    <div className="min-h-screen overflow-x-hidden bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white transition-colors">
 
       {/* HERO */}
       <section
@@ -69,11 +69,11 @@ export const Component = () => {
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center justify-center px-4 text-center">
           <div>
 
-            <h1 className="mb-4 text-3xl font-bold text-cyan-400 md:text-5xl">
+            <h1 className="mb-4 text-3xl font-bold text-teal-600 dark:text-teal-400 md:text-5xl">
               {movieDetails.title}
             </h1>
 
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-2 text-zinc-300">
 
               <span>{movieDetails.release_date}</span>
 
@@ -105,17 +105,17 @@ export const Component = () => {
               className="mx-auto w-full max-w-sm rounded-3xl shadow-2xl"
             />
 
-            <div className="mt-5 rounded-2xl bg-[#1b1b1b] p-5 text-center">
+            <div className="mt-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 text-center">
 
-              <p className="text-gray-400">
+              <p className="text-zinc-500 dark:text-zinc-400">
                 Rating
               </p>
 
-              <h2 className="mt-2 text-4xl font-bold text-yellow-500">
+              <h2 className="mt-2 text-4xl font-bold text-yellow-600 dark:text-yellow-500">
                 {movieDetails.vote_average?.toFixed(1)}
               </h2>
 
-              <p className="text-gray-400">
+              <p className="text-zinc-500 dark:text-zinc-400">
                 {movieDetails.vote_count} votes
               </p>
 
@@ -127,22 +127,22 @@ export const Component = () => {
           <main className="space-y-8 lg:col-span-8 xl:col-span-9">
 
             {/* OVERVIEW */}
-            <div className="rounded-2xl bg-[#1b1b1b] p-6">
+            <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6">
 
-              <h2 className="mb-4 text-2xl font-bold text-cyan-400">
+              <h2 className="mb-4 text-2xl font-bold text-teal-600 dark:text-teal-400">
                 Overview
               </h2>
 
-              <p className="leading-8 text-gray-300">
+              <p className="leading-8 text-zinc-700 dark:text-zinc-300">
                 {movieDetails.overview}
               </p>
 
             </div>
 
             {/* CAST */}
-            <div className="rounded-2xl bg-[#1b1b1b] p-6">
+            <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6">
 
-              <h2 className="mb-5 text-2xl font-bold text-cyan-400">
+              <h2 className="mb-5 text-2xl font-bold text-teal-600 dark:text-teal-400">
                 Cast
               </h2>
 
@@ -151,7 +151,7 @@ export const Component = () => {
                 {castAndCrewData?.cast?.slice(0, 10).map((actor) => (
                   <div
                     key={actor.id}
-                    className="overflow-hidden rounded-xl bg-[#252525]"
+                    className="overflow-hidden rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"
                   >
 
                     <img
@@ -166,11 +166,11 @@ export const Component = () => {
 
                     <div className="p-3 text-center">
 
-                      <p className="font-semibold">
+                      <p className="font-semibold text-zinc-900 dark:text-white">
                         {actor.name}
                       </p>
 
-                      <p className="text-xs text-yellow-500">
+                      <p className="text-xs text-yellow-600 dark:text-yellow-500">
                         Acting
                       </p>
 
@@ -184,9 +184,9 @@ export const Component = () => {
             </div>
 
             {/* CREW */}
-            <div className="rounded-2xl bg-[#1b1b1b] p-6">
+            <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6">
 
-              <h2 className="mb-5 text-2xl font-bold text-cyan-400">
+              <h2 className="mb-5 text-2xl font-bold text-teal-600 dark:text-teal-400">
                 Crew
               </h2>
 
@@ -195,14 +195,14 @@ export const Component = () => {
                 {castAndCrewData?.crew?.slice(0, 9).map((member) => (
                   <div
                     key={member.credit_id}
-                    className="rounded-xl bg-[#252525] p-4"
+                    className="rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-4 shadow-sm"
                   >
 
-                    <p className="font-bold">
+                    <p className="font-bold text-zinc-900 dark:text-white">
                       {member.name}
                     </p>
 
-                    <p className="mt-1 text-yellow-500">
+                    <p className="mt-1 text-yellow-600 dark:text-yellow-500">
                       {member.job}
                     </p>
 
@@ -214,14 +214,14 @@ export const Component = () => {
             </div>
 
             {/* ACTIONS */}
-            <div className="flex flex-wrap gap-4 rounded-2xl bg-[#1b1b1b] p-6">
+            <div className="flex flex-wrap gap-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6">
 
               <button
                 onClick={() => toggleWishlist(movieDetails)}
-                className={`rounded-lg px-5 py-3 font-semibold text-black transition ${
+                className={`rounded-lg px-5 py-3 font-semibold text-white transition ${
                   isInWishlist(movieDetails.id)
                     ? "bg-red-500 hover:bg-red-400"
-                    : "bg-cyan-500 hover:bg-cyan-400"
+                    : "bg-teal-600 hover:bg-teal-500"
                 }`}
               >
                 {isInWishlist(movieDetails.id) ? "Remove from Wishlist" : "Add to Wishlist"}
@@ -229,7 +229,7 @@ export const Component = () => {
 
               <button
                 onClick={() => setOpenTrailer(true)}
-                className="rounded-lg bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-500"
+                className="rounded-lg bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-500 shadow-md"
               >
                 ▶ Play Trailer
               </button>
@@ -245,7 +245,7 @@ export const Component = () => {
                   navigate("/movies");
                 }
               }}
-              className="rounded-lg border border-cyan-400 px-6 py-3 text-cyan-400 transition hover:bg-cyan-400 hover:text-black"
+              className="rounded-lg border border-teal-600 dark:border-teal-400 px-6 py-3 text-teal-600 dark:text-teal-400 font-semibold transition hover:bg-teal-600 dark:hover:bg-teal-400 hover:text-white dark:hover:text-black"
             >
               Back
             </button>
