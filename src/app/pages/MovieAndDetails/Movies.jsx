@@ -32,7 +32,7 @@ export const ErrorBoundary = () => {
 
 
 
-export const Component = () => {
+export const Component = ({ showPagination = true }) => {
   const result = useLoaderData();
   const [counter, setCounter] = useState(1);
   const [movies, setMovies] = useState([]);
@@ -143,8 +143,9 @@ export const Component = () => {
           </div>
         ))}
       </div>
-
+     
       {/* Pagination */}
+      {showPagination && (
       <div className="flex items-center justify-center gap-4 py-10">
 
         {/* First Page Button */}
@@ -189,7 +190,8 @@ export const Component = () => {
           <ChevronDoubleRightIcon className="h-5 w-5 text-zinc-600 dark:text-white" />
         </button>
 
-      </div>
+            </div>
+      )}
     </div>
   );
-}
+};
