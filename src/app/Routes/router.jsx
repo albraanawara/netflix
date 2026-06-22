@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: Movies,
+        lazy: Home,
       },
       {
         path: "movies",
